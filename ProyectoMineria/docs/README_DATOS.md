@@ -46,7 +46,7 @@ Datos raw/
   - `urbana`, `suburbana`, `carretera`, `calle1`, `calle2`
   - `nemuerto`, `neherido`, `clase`, `tipaccid`, `automovil`, `campasaj`, etc.
 
-**⚠️ Problemas conocidos:**
+**️ Problemas conocidos:**
 - Valores nulos en múltiples columnas
 - Inconsistencias en formato de fechas
 - Coordenadas (0, 0) o fuera de rango
@@ -283,7 +283,7 @@ Si deseas **reproducir el análisis completo**, asegúrate de ejecutar los noteb
 
 ---
 
-## ⚠️ Notas Importantes
+## ️ Notas Importantes
 
 - **NO MODIFIQUES** los archivos en `Datos raw/` - son la fuente original
 - Los archivos en `Datos combinados CDMX/` son **regenerables** ejecutando los notebooks en orden

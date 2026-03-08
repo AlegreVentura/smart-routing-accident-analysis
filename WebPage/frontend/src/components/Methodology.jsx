@@ -159,7 +159,7 @@ const Methodology = () => {
                   <div className="grid grid-cols-2 gap-2">
                     {item.details.map((detail, idx) => (
                       <div key={idx} className="flex items-start text-sm text-gray-700">
-                        <span className="text-primary-600 mr-2">✓</span>
+                        <span className="text-primary-600 mr-2"></span>
                         <span>{detail}</span>
                       </div>
                     ))}

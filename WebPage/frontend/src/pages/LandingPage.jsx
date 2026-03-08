@@ -79,19 +79,19 @@ const LandingPage = () => {
               </p>
               <ul className="space-y-3 mb-6 text-gray-100">
                 <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold">✓</span>
+                  <span className="text-primary-200 mr-2 font-bold"></span>
                   <span>78K+ accidentes analizados (2019-2023)</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold">✓</span>
+                  <span className="text-primary-200 mr-2 font-bold"></span>
                   <span>299 clusters identificados</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold">✓</span>
+                  <span className="text-primary-200 mr-2 font-bold"></span>
                   <span>Heatmaps temporales interactivos</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold">✓</span>
+                  <span className="text-primary-200 mr-2 font-bold"></span>
                   <span>Rutas alternativas optimizadas</span>
                 </li>
               </ul>
@@ -114,19 +114,19 @@ const LandingPage = () => {
               </p>
               <ul className="space-y-3 mb-6 text-gray-100">
                 <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold">✓</span>
+                  <span className="text-accent-200 mr-2 font-bold"></span>
                   <span>Clusters de accidentes desatendidos</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold">✓</span>
+                  <span className="text-accent-200 mr-2 font-bold"></span>
                   <span>Análisis de cobertura nacional</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold">✓</span>
+                  <span className="text-accent-200 mr-2 font-bold"></span>
                   <span>10 hospitales propuestos</span>
                 </li>
                 <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold">✓</span>
+                  <span className="text-accent-200 mr-2 font-bold"></span>
                   <span>Mejora en tiempos de respuesta</span>
                 </li>
               </ul>

@@ -359,7 +359,7 @@ const HospitalesPage = () => {
                     <p className="text-xs text-gray-500">En zonas críticas identificadas</p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-600 mb-2">Accidentes lejanos (>10km)</p>
+                    <p className="text-sm text-gray-600 mb-2">Accidentes lejanos (&gt;10km)</p>
                     <p className="text-4xl font-bold text-accent-600 mb-1">-74%</p>
                     <p className="text-xs text-gray-500">De 91 a 17 accidentes alejados</p>
                   </div>

@@ -37,7 +37,7 @@ const FitBounds = ({ routes }) => {
  * @param {Array} routes - Array de rutas con {type, coordinates, distance, risk, color}
  * @param {Array} waypoints - Array de objetos waypoint {lat, lng, name}
  */
-const RouteMap = ({ origin, destination, routes = [], waypoints = [] }) => {
+const RouteMap = ({ origin, destination, routes = [], waypoints = [], gmapsRoute = null }) => {
   // Centro predeterminado: Ciudad de México (Zócalo)
   const defaultCenter = origin || { lat: 19.4326, lng: -99.1332 }
 
@@ -85,8 +85,9 @@ const RouteMap = ({ origin, destination, routes = [], waypoints = [] }) => {
         scrollWheelZoom={true}
       >
         <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+          url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+          crossOrigin="anonymous"
         />
 
         {/* Fit bounds to show all routes */}
@@ -143,6 +144,24 @@ const RouteMap = ({ origin, destination, routes = [], waypoints = [] }) => {
           </Marker>
         )}
 
+        {/* Google Maps route (dashed purple) */}
+        {gmapsRoute && gmapsRoute.coordinates?.length > 0 && (
+          <Polyline
+            positions={gmapsRoute.coordinates}
+            pathOptions={{ color: '#a855f7', weight: 4, opacity: 0.8, dashArray: '8 6' }}
+          >
+            <Popup>
+              <div className="text-sm">
+                <strong>Google Maps</strong>
+                <br />
+                Distancia: {gmapsRoute.distance} km
+                <br />
+                Tiempo: {gmapsRoute.duration} min
+              </div>
+            </Popup>
+          </Polyline>
+        )}
+
         {/* Waypoint markers */}
         {waypoints && waypoints.map((waypoint, index) => (
           <Marker key={index} position={[waypoint.lat, waypoint.lng]} icon={waypointIcon}>
@@ -171,6 +190,12 @@ const RouteMap = ({ origin, destination, routes = [], waypoints = [] }) => {
                 <span className="text-xs text-gray-700">{route.name}</span>
               </div>
             ))}
+            {gmapsRoute && (
+              <div className="flex items-center space-x-2 pt-1 border-t border-gray-200">
+                <div className="w-4 h-0 border-t-2 border-dashed border-purple-500"></div>
+                <span className="text-xs text-gray-700">Google Maps</span>
+              </div>
+            )}
           </div>
         </div>
       )}

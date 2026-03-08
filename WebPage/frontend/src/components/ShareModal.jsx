@@ -164,7 +164,7 @@ const ShareModal = ({ isOpen, onClose, routeData }) => {
                   </div>
                   {(window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && (
                     <div className="mt-2 text-xs text-orange-600 bg-orange-50 p-2 rounded">
-                      ⚠️ Estás en localhost. Para compartir desde celular, accede desde la IP de tu red (ej: 192.168.1.x:3002)
+                      ️ Estás en localhost. Para compartir desde celular, accede desde la IP de tu red (ej: 192.168.1.x:3002)
                     </div>
                   )}
                 </div>

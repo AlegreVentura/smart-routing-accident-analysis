@@ -180,7 +180,7 @@ const BlackSpotsMap = () => {
                         <div>🚗 <strong>{spot.accidents}</strong> accidentes totales</div>
                         <div>💀 <strong>{spot.deaths}</strong> muertos</div>
                         <div>🤕 <strong>{spot.injured}</strong> heridos</div>
-                        <div>⚠️ Severidad: <strong>{spot.severity}</strong> ({getSeverityLabel(spot.severity)})</div>
+                        <div>️ Severidad: <strong>{spot.severity}</strong> ({getSeverityLabel(spot.severity)})</div>
                       </div>
                       <div className="mt-2 text-xs bg-yellow-50 p-2 rounded">
                         <strong>Recomendación:</strong> Evitar zona especialmente en horas pico

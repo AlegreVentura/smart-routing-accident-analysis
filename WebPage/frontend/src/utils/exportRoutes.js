@@ -43,46 +43,20 @@ export const exportToPDF = async (routeData) => {
       // Esperar a que el mapa termine de renderizar
       await new Promise(resolve => setTimeout(resolve, 2000))
 
+      const scale = 2
       const canvas = await html2canvas(mapElement, {
         useCORS: true,
         allowTaint: false,
         backgroundColor: '#ffffff',
-        scale: 2,
-        logging: true,
+        scale,
+        logging: false,
         width: mapElement.offsetWidth,
         height: mapElement.offsetHeight,
-        foreignObjectRendering: true,
-        onclone: (clonedDoc) => {
-          // Forzar renderizado de capas SVG y canvas
-          const clonedMap = clonedDoc.querySelector('.leaflet-container')
-          if (clonedMap) {
-            clonedMap.style.width = mapElement.offsetWidth + 'px'
-            clonedMap.style.height = mapElement.offsetHeight + 'px'
-
-            // Forzar visibilidad de todas las capas
-            const panes = clonedMap.querySelectorAll('.leaflet-pane')
-            panes.forEach(pane => {
-              pane.style.zIndex = 'auto'
-              pane.style.position = 'absolute'
-            })
-
-            // Asegurar que los SVG paths sean visibles
-            const paths = clonedMap.querySelectorAll('path')
-            paths.forEach(path => {
-              const stroke = path.getAttribute('stroke')
-              const strokeWidth = path.getAttribute('stroke-width')
-              if (stroke) {
-                path.style.stroke = stroke
-                path.style.strokeWidth = strokeWidth || '3'
-                path.style.fill = 'none'
-                path.style.strokeOpacity = '0.8'
-              }
-            })
-          }
-        }
       })
 
-      const imgData = canvas.toDataURL('image/png', 1.0) // Máxima calidad
+      await drawSVGOverlay(canvas, mapElement, scale)
+
+      const imgData = canvas.toDataURL('image/png', 1.0)
       const imgWidth = pageWidth - 40 // Margen de 20mm a cada lado
       const imgHeight = (canvas.height * imgWidth) / canvas.width
       const maxHeight = 120 // Altura máxima en mm
@@ -146,6 +120,35 @@ export const exportToPDF = async (routeData) => {
   pdf.save(`ruta_${origin.replace(/\s+/g, '_')}_${destination.replace(/\s+/g, '_')}.pdf`)
 }
 
+// html2canvas no captura el SVG de Leaflet (polylines). Se serializa manualmente y se dibuja encima.
+const drawSVGOverlay = async (canvas, mapElement, scale) => {
+  const svgElement = mapElement.querySelector('.leaflet-overlay-pane svg')
+  if (!svgElement) return
+
+  const svgData = new XMLSerializer().serializeToString(svgElement)
+  const svgBlob = new Blob([svgData], { type: 'image/svg+xml;charset=utf-8' })
+  const svgUrl = URL.createObjectURL(svgBlob)
+
+  await new Promise((resolve) => {
+    const img = new Image()
+    img.onload = () => {
+      const mapRect = mapElement.getBoundingClientRect()
+      const svgRect = svgElement.getBoundingClientRect()
+      canvas.getContext('2d').drawImage(
+        img,
+        (svgRect.left - mapRect.left) * scale,
+        (svgRect.top  - mapRect.top)  * scale,
+        svgRect.width  * scale,
+        svgRect.height * scale,
+      )
+      URL.revokeObjectURL(svgUrl)
+      resolve()
+    }
+    img.onerror = () => { URL.revokeObjectURL(svgUrl); resolve() }
+    img.src = svgUrl
+  })
+}
+
 /**
  * Exporta el mapa como imagen PNG
  * @param {string} mapElementId - ID del elemento del mapa
@@ -162,51 +165,21 @@ export const exportToPNG = async (mapElementId, filename = 'mapa_ruta') => {
   }
 
   try {
-    // Esperar más tiempo para asegurar que todo esté renderizado
     await new Promise(resolve => setTimeout(resolve, 2000))
 
+    const scale = 2
     const canvas = await html2canvas(mapElement, {
       useCORS: true,
       allowTaint: false,
       backgroundColor: '#ffffff',
-      scale: 2,
-      logging: true,
+      scale,
+      logging: false,
       width: mapElement.offsetWidth,
       height: mapElement.offsetHeight,
-      imageTimeout: 0,
-      foreignObjectRendering: true,
-      onclone: (clonedDoc) => {
-        const clonedMap = clonedDoc.querySelector('.leaflet-container')
-        if (clonedMap) {
-          clonedMap.style.width = mapElement.offsetWidth + 'px'
-          clonedMap.style.height = mapElement.offsetHeight + 'px'
-
-          // Forzar visibilidad de todas las capas
-          const panes = clonedMap.querySelectorAll('.leaflet-pane')
-          panes.forEach(pane => {
-            pane.style.zIndex = 'auto'
-            pane.style.position = 'absolute'
-          })
-
-          // Asegurar que los SVG paths (rutas) sean visibles
-          const paths = clonedMap.querySelectorAll('path')
-          paths.forEach(path => {
-            const stroke = path.getAttribute('stroke')
-            const strokeWidth = path.getAttribute('stroke-width') ||  '4'
-            if (stroke) {
-              path.style.stroke = stroke
-              path.style.strokeWidth = strokeWidth
-              path.style.fill = 'none'
-              path.style.strokeOpacity = '1'
-              path.style.strokeLinecap = 'round'
-              path.style.strokeLinejoin = 'round'
-            }
-          })
-        }
-      }
     })
 
-    // Convertir canvas a blob y descargar con máxima calidad
+    await drawSVGOverlay(canvas, mapElement, scale)
+
     canvas.toBlob((blob) => {
       const url = URL.createObjectURL(blob)
       const link = document.createElement('a')
@@ -214,8 +187,7 @@ export const exportToPNG = async (mapElementId, filename = 'mapa_ruta') => {
       link.download = `${filename}.png`
       link.click()
       URL.revokeObjectURL(url)
-      console.log('✅ Mapa exportado exitosamente como PNG')
-    }, 'image/png', 1.0) // Máxima calidad
+    }, 'image/png', 1.0)
   } catch (error) {
     console.error('Error al exportar imagen:', error)
     alert('Error al exportar el mapa. Por favor intenta de nuevo.')

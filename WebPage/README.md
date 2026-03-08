@@ -144,7 +144,18 @@ Edita el archivo `.env`:
 PORT=5000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
+
+# HERE Routing API — tiempos de viaje con tráfico real
+# Obtener gratis en: https://platform.here.com  (250,000 req/mes gratis)
+HERE_API_KEY=tu_api_key_aqui
+
+# Google Maps Directions API — mostrar ruta de Google Maps en la demo (opcional)
+# Obtener en: https://console.cloud.google.com → APIs → Directions API
+# Requiere facturación activada (tiene capa gratuita de $200/mes)
+GOOGLE_MAPS_API_KEY=tu_api_key_aqui
 ```
+
+> Las APIs son opcionales. Sin HERE, el tiempo se calcula con velocidad libre (subestimado). Sin Google Maps, la ruta de referencia simplemente no aparece en el mapa.
 
 ---
 

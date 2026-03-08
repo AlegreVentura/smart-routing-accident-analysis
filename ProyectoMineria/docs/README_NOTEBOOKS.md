@@ -81,7 +81,7 @@ proceso.ipynb  (PASO 0 - Ejecutar primero)
 
 **Tiempo estimado:** 15-25 minutos
 
-**⚠️ Importante:** Este notebook DEBE ejecutarse primero. Todos los demás dependen de sus salidas.
+**️ Importante:** Este notebook DEBE ejecutarse primero. Todos los demás dependen de sus salidas.
 
 ---
 
@@ -268,13 +268,13 @@ d) **Radar Chart Multidimensional:**
 🆚 Ruta Más Segura vs Ruta Más Corta:
 
    📏 Distancia adicional: 1.49 km (+17.1%)
-   ⚠️  Reducción de riesgo: 13.8 puntos (32.6% más segura)
+   ️  Reducción de riesgo: 13.8 puntos (32.6% más segura)
    ⏱️  Tiempo adicional estimado: ~4 minutos (a 25 km/h promedio)
 
 🎯 RECOMENDACIÓN: Ruta Más Segura
-   ✓ Reduce el riesgo en 32.6%
-   ✓ Solo 1.5 km más larga (17%)
-   ✓ ~4 minutos adicionales
+    Reduce el riesgo en 32.6%
+    Solo 1.5 km más larga (17%)
+    ~4 minutos adicionales
    💰 Valor: Mucho más seguro con costo mínimo en tiempo
 ```
 
@@ -378,7 +378,7 @@ Este notebook puede ejecutarse solo porque usa los archivos ya generados.
 
 ---
 
-## ⚠️ Notas Importantes
+## ️ Notas Importantes
 
 ### Dependencias
 ```bash

@@ -12,6 +12,10 @@ const Demo = () => {
   const [showResults, setShowResults] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [calculatedRoutes, setCalculatedRoutes] = useState([])
+  const [gmapsRoute, setGmapsRoute] = useState(null)
+  const [vehiculo, setVehiculo] = useState('automovil')
+  const [hora, setHora] = useState(new Date().getHours())
+  const [routeError, setRouteError] = useState(null)
 
   const presetLocations = [
     'Zócalo (Centro Histórico)',
@@ -36,64 +40,6 @@ const Demo = () => {
     'Santa Fe': { lat: 19.3595, lng: -99.2674, name: 'Santa Fe' },
   }
 
-  // Rutas de ejemplo (Zócalo → Polanco)
-  const mockRoutes = [
-    {
-      type: 'short',
-      name: 'Más Corta',
-      color: '#3b82f6',
-      coordinates: [
-        [19.4326, -99.1332], // Zócalo
-        [19.4340, -99.1450],
-        [19.4360, -99.1580],
-        [19.4380, -99.1720],
-        [19.4390, -99.1860],
-        [19.4400, -99.1980],
-        [19.4406, -99.2042], // Polanco
-      ],
-      distance: '8.74',
-      risk: '42.3',
-      safety: '57.7',
-    },
-    {
-      type: 'balanced',
-      name: 'Balanceada',
-      color: '#f59e0b',
-      coordinates: [
-        [19.4326, -99.1332], // Zócalo
-        [19.4330, -99.1400],
-        [19.4350, -99.1520],
-        [19.4370, -99.1650],
-        [19.4385, -99.1780],
-        [19.4395, -99.1900],
-        [19.4405, -99.2020],
-        [19.4406, -99.2042], // Polanco
-      ],
-      distance: '9.12',
-      risk: '35.8',
-      safety: '64.2',
-    },
-    {
-      type: 'safe',
-      name: 'Más Segura',
-      color: '#10b981',
-      coordinates: [
-        [19.4326, -99.1332], // Zócalo
-        [19.4320, -99.1380],
-        [19.4340, -99.1500],
-        [19.4360, -99.1630],
-        [19.4375, -99.1760],
-        [19.4390, -99.1890],
-        [19.4400, -99.2000],
-        [19.4405, -99.2025],
-        [19.4406, -99.2042], // Polanco
-      ],
-      distance: '10.23',
-      risk: '28.5',
-      safety: '71.5',
-    },
-  ]
-
   const routeTypes = [
     { id: 'short', name: 'Más Corta', color: 'blue', description: 'Minimiza distancia' },
     { id: 'balanced', name: 'Balanceada', color: 'orange', description: 'Equilibrio distancia/seguridad' },
@@ -102,19 +48,36 @@ const Demo = () => {
 
   const handleCalculate = async () => {
     setIsLoading(true)
+    setRouteError(null)
     try {
-      // Calcular rutas reales usando OSRM
-      const routes = await calculateMultipleRoutes(
-        locationCoords[origin],
-        locationCoords[destination]
-      )
-      setCalculatedRoutes(routes)
+      const originCoords = locationCoords[origin]
+      const destCoords = locationCoords[destination]
+      const context = { hora, vehiculo }
+
+      const [routes, gmapsRes] = await Promise.allSettled([
+        calculateMultipleRoutes(originCoords, destCoords, context),
+        fetch('/api/routing/gmaps', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ origin: originCoords, destination: destCoords }),
+        }).then(r => r.json()),
+      ])
+
+      if (routes.status === 'rejected' || !routes.value?.length) {
+        const msg = routes.reason?.message || 'El servicio de ruteo no está disponible.'
+        console.error('[Demo] Error en calculateMultipleRoutes:', msg)
+        setRouteError(msg)
+        return
+      }
+
+      setCalculatedRoutes(routes.value)
+      if (gmapsRes.status === 'fulfilled' && gmapsRes.value?.coordinates?.length > 0) {
+        setGmapsRoute(gmapsRes.value)
+      }
       setShowResults(true)
     } catch (error) {
-      console.error('Error calculando rutas:', error)
-      // Usar rutas mock como fallback
-      setCalculatedRoutes(mockRoutes)
-      setShowResults(true)
+      console.error('[Demo] Error inesperado calculando rutas:', error)
+      setRouteError(error.message || 'Error inesperado.')
     } finally {
       setIsLoading(false)
     }
@@ -123,14 +86,18 @@ const Demo = () => {
   const handleReset = () => {
     setShowResults(false)
     setCalculatedRoutes([])
+    setGmapsRoute(null)
     setOrigin('Zócalo (Centro Histórico)')
     setDestination('Polanco (Museo Soumaya)')
     setRouteType('safe')
+    setVehiculo('automovil')
+    setHora(new Date().getHours())
+    setRouteError(null)
   }
 
   const handleExportPDF = () => {
-    const routes = calculatedRoutes.length > 0 ? calculatedRoutes : mockRoutes
-    const selectedRoute = routes.find(r => r.type === routeType) || routes[2]
+    const routes = calculatedRoutes
+    const selectedRoute = routes.find(r => r.type === routeType) || routes[0]
     const exportData = {
       origin,
       destination,
@@ -146,8 +113,8 @@ const Demo = () => {
 
   // Obtener estadísticas dinámicas de las rutas
   const getRouteStats = () => {
-    const routes = calculatedRoutes.length > 0 ? calculatedRoutes : mockRoutes
-    const selectedRoute = routes.find(r => r.type === routeType) || routes[2]
+    const routes = calculatedRoutes
+    const selectedRoute = routes.find(r => r.type === routeType) || routes[0]
     const shortestRoute = routes.find(r => r.type === 'short') || routes[0]
 
     const distDiff = (parseFloat(selectedRoute.distance) - parseFloat(shortestRoute.distance)).toFixed(2)
@@ -266,6 +233,56 @@ const Demo = () => {
                 </div>
               </div>
 
+              {/* Perfil de viaje */}
+              <div className="mb-6">
+                <label className="flex items-center text-sm font-medium mb-3">
+                  <FaRoute className="text-accent-400 mr-2" />
+                  Vehículo
+                </label>
+                <div className="grid grid-cols-3 gap-2">
+                  {[
+                    { id: 'automovil',  label: 'Auto' },
+                    { id: 'camioneta',  label: 'Camioneta' },
+                    { id: 'motociclet', label: 'Moto' },
+                  ].map(v => (
+                    <button
+                      key={v.id}
+                      onClick={() => setVehiculo(v.id)}
+                      className={`py-2 px-3 rounded-lg text-sm font-medium transition-all ${
+                        vehiculo === v.id
+                          ? 'bg-accent-500 text-white'
+                          : 'bg-white/10 text-gray-300 hover:bg-white/20'
+                      }`}
+                    >
+                      {v.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-6">
+                <label className="flex items-center justify-between text-sm font-medium mb-2">
+                  <span className="flex items-center">
+                    <FaInfoCircle className="text-accent-400 mr-2" />
+                    Hora de salida
+                  </span>
+                  <span className="text-accent-300 font-mono">{String(hora).padStart(2, '0')}:00</span>
+                </label>
+                <input
+                  type="range"
+                  min={0}
+                  max={23}
+                  value={hora}
+                  onChange={e => setHora(Number(e.target.value))}
+                  className="w-full accent-accent-400"
+                />
+                <div className="flex justify-between text-xs text-gray-400 mt-1">
+                  <span>00:00</span>
+                  <span>12:00</span>
+                  <span>23:00</span>
+                </div>
+              </div>
+
               {/* Calculate Button */}
               <button
                 onClick={handleCalculate}
@@ -289,6 +306,28 @@ const Demo = () => {
                   </>
                 )}
               </button>
+
+              {/* Google Maps comparison — shown after calculation */}
+              {showResults && gmapsRoute && (() => {
+                const selected = calculatedRoutes.find(r => r.type === routeType) || calculatedRoutes[0]
+                return (
+                  <div className="mt-6 pt-5 border-t border-white/20">
+                    <p className="text-sm font-semibold mb-3 text-gray-200">vs Google Maps</p>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-green-500/20 rounded-xl p-3 text-center">
+                        <div className="text-xs text-gray-300 mb-1">{selected.name}</div>
+                        <div className="font-bold">{selected.distance} km</div>
+                        <div className="text-sm text-green-300">{selected.duration || '—'} min</div>
+                      </div>
+                      <div className="bg-purple-500/20 rounded-xl p-3 text-center">
+                        <div className="text-xs text-gray-300 mb-1">Google Maps</div>
+                        <div className="font-bold">{gmapsRoute.distance} km</div>
+                        <div className="text-sm text-purple-300">{gmapsRoute.duration} min</div>
+                      </div>
+                    </div>
+                  </div>
+                )
+              })()}
             </motion.div>
 
             {/* Results Panel */}
@@ -301,7 +340,13 @@ const Demo = () => {
             >
               <h3 className="text-2xl font-bold mb-6">Resultados</h3>
 
-              {showResults ? (
+              {routeError ? (
+                <div className="bg-red-500/20 border border-red-400/40 rounded-xl p-6 text-center">
+                  <p className="text-red-300 font-semibold mb-2">No se pudieron calcular las rutas</p>
+                  <p className="text-sm text-gray-300">{routeError}</p>
+                  <p className="text-xs text-gray-400 mt-3">Verifica que el backend y ml_service.py estén corriendo, y que hayas ejecutado el notebook 03.</p>
+                </div>
+              ) : showResults ? (
                 <div className="space-y-6">
                   {(() => {
                     const stats = getRouteStats()
@@ -317,7 +362,7 @@ const Demo = () => {
                               routeType === 'balanced' ? 'bg-orange-500' :
                               'bg-blue-500'
                             }`}>
-                              {route.name} {routeType === 'safe' ? '⭐' : ''}
+                              {route.name}
                             </span>
                           </div>
                           <div className="space-y-3">
@@ -346,6 +391,7 @@ const Demo = () => {
                               }`}>{route.safety} / 100</span>
                             </div>
                           </div>
+
                         </div>
 
                         {/* Comparison */}
@@ -394,7 +440,8 @@ const Demo = () => {
                     <RouteMap
                       origin={locationCoords[origin]}
                       destination={locationCoords[destination]}
-                      routes={calculatedRoutes.length > 0 ? calculatedRoutes : mockRoutes}
+                      routes={calculatedRoutes}
+                      gmapsRoute={gmapsRoute}
                     />
                   </div>
 
@@ -419,7 +466,7 @@ const Demo = () => {
                   {/* New Search Button */}
                   <button
                     onClick={handleReset}
-                    className="w-full btn-secondary bg-white/10 hover:bg-white/20 border border-white/30 flex items-center justify-center space-x-2"
+                    className="w-full btn-secondary bg-white/10 hover:bg-white/20 border border-white/30 text-white flex items-center justify-center space-x-2"
                   >
                     <FaRedo />
                     <span>Nueva Búsqueda</span>

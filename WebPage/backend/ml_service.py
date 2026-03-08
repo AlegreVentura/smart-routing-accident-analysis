@@ -35,7 +35,7 @@ GRAPH_DIR  = (_HERE / "../../ProyectoMineria/Red vial").resolve()
 
 # ── Carga de modelos (al inicio, una sola vez) ────────────────────────────────
 print("[ml_service] Cargando modelos...", file=sys.stderr)
-_model         = joblib.load(MODEL_DIR / "modelo_riesgo_rf.pkl")
+_model         = joblib.load(MODEL_DIR / "modelo_riesgo_stack.pkl")
 _scaler        = joblib.load(MODEL_DIR / "scaler.pkl")
 _feature_names = list(joblib.load(MODEL_DIR / "feature_names.pkl"))
 print(f"[ml_service] Modelo listo: {type(_model).__name__}", file=sys.stderr)

@@ -167,12 +167,14 @@ Datos raw/ (INEGI, 2019-2023)
 
 ### Machine Learning
 
-| Modelo | Accuracy | F1-Score |
-|--------|----------|----------|
-| Decision Tree | 82% | 0.76 |
-| Random Forest | 87% | 0.83 |
-| Logistic Regression | 78% | 0.72 |
-| **Stacking Ensemble** | **88%** | **0.85** |
+Dataset desbalanceado (~97% no grave, ~3% grave) — se usó SMOTE. La métrica relevante es ROC-AUC y F1 de la clase minoritaria (grave).
+
+| Modelo | ROC-AUC | F1 (grave) |
+|--------|---------|------------|
+| Decision Tree | 0.9855 | 0.47 |
+| Logistic Regression | 0.9869 | 0.35 |
+| Stacking Ensemble | 0.9859 | 0.64 |
+| **Random Forest** | **0.9904** | **0.85** (umbral optimizado 0.717) |
 
 ### Fórmula de Riesgo Compuesto
 

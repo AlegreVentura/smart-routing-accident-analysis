@@ -207,7 +207,6 @@ Los datos crudos (`Datos raw/`) provienen del **INEGI** — Registro Administrat
 
 ## Documentación Adicional
 
-- [`docs/README_DATOS.md`](docs/README_DATOS.md) — Explicación detallada de cada CSV
+- [`docs/README_FORMULAS.md`](docs/README_FORMULAS.md) — Fórmulas, pesos y decisiones técnicas
 - [`docs/README_NOTEBOOKS.md`](docs/README_NOTEBOOKS.md) — Detalles técnicos de cada notebook
-- [`docs/README_FORMULAS.ipynb`](docs/README_FORMULAS.ipynb) — Fórmulas matemáticas con LaTeX
 - [`Documentos/Reporte_minería.pdf`](Documentos/Reporte_minería.pdf) — Reporte final del proyecto

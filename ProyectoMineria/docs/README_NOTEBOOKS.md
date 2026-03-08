@@ -170,6 +170,5 @@ jupyter notebook 03_sistema_ruteo.ipynb
 
 ## Recursos adicionales
 
-- [README_DATOS.md](README_DATOS.md) — explicación detallada de cada CSV
-- [README_FORMULAS.ipynb](README_FORMULAS.ipynb) — fórmulas con LaTeX
+- [README_FORMULAS.md](README_FORMULAS.md) — fórmulas, pesos y decisiones técnicas
 - [ARQUITECTURA_WEB.md](ARQUITECTURA_WEB.md) — arquitectura de la aplicación web

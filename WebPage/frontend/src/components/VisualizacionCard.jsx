@@ -2,12 +2,12 @@ import { useState } from 'react'
 import { FaExternalLinkAlt, FaSpinner, FaExclamationTriangle } from 'react-icons/fa'
 
 const VisualizacionCard = ({ title, description, src }) => {
-  const [iframeState, setIframeState] = useState('loading') // 'loading' | 'ready' | 'error'
+  const [iframeState, setIframeState] = useState('loading')
 
   return (
     <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200 hover:shadow-2xl transition-all duration-300 flex flex-col">
-      {/* Iframe preview */}
-      <div className="relative w-full" style={{ height: '280px' }}>
+      {/* Iframe preview — renderiza al doble y escala a 50% para evitar texto ilegible */}
+      <div className="relative w-full overflow-hidden" style={{ height: '300px' }}>
         {iframeState === 'loading' && (
           <div className="absolute inset-0 flex items-center justify-center bg-gradient-to-br from-primary-50 to-accent-50 z-10">
             <div className="text-center">
@@ -29,8 +29,14 @@ const VisualizacionCard = ({ title, description, src }) => {
         <iframe
           src={src}
           title={title}
-          className="w-full h-full border-0"
-          style={{ pointerEvents: 'none' }}
+          style={{
+            width: '200%',
+            height: '200%',
+            transform: 'scale(0.5)',
+            transformOrigin: 'top left',
+            pointerEvents: 'none',
+            border: 'none',
+          }}
           sandbox="allow-scripts allow-same-origin"
           onLoad={() => setIframeState('ready')}
           onError={() => setIframeState('error')}

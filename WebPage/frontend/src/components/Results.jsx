@@ -9,7 +9,7 @@ import BlackSpotsMap from './BlackSpotsMap'
 
 const Results = () => {
   const [activeTab, setActiveTab] = useState('spatial')
-  const [spatialSubTab, setSpatialSubTab] = useState('dbscan')
+  const [spatialSubTab, setSpatialSubTab] = useState('hourly')
 
   const tabs = [
     { id: 'spatial', name: 'Análisis Espacial', icon: FaMapMarkedAlt },
@@ -19,11 +19,11 @@ const Results = () => {
   ]
 
   const spatialTechniques = [
+    { id: 'hourly', name: 'Heatmap Temporal', description: 'Densidad por Hora/Día' },
     { id: 'dbscan', name: 'DBSCAN', description: 'Density-Based Clustering' },
     { id: 'getis-ord', name: 'Getis-Ord Gi*', description: 'Hot Spot Analysis' },
     { id: 'morans-i', name: "Moran's I", description: 'Spatial Autocorrelation' },
     { id: 'grid', name: 'Grid Analysis', description: 'Spatial Grid Aggregation' },
-    { id: 'hourly', name: 'Heatmap Temporal', description: 'Densidad por Hora/Día' },
     { id: 'black-spots', name: 'Puntos Negros', description: 'Top 50 Intersecciones' },
   ]
 
@@ -158,13 +158,13 @@ const Results = () => {
     }
   })
 
-  // DATOS REALES de modelos ML (Fuente: 02_modelado_ml_causas.ipynb)
-  // Predicción de gravedad del accidente (target_gravedad): 0=No Grave, 1=Grave
+  // Métricas reales de modelos ML (Fuente: 02_analisis_y_modelado.ipynb)
+  // Métrica relevante: ROC-AUC y F1 de clase grave (dataset desbalanceado ~3% grave)
   const mlModelData = [
-    { name: 'Decision Tree', accuracy: 88.71, precision: 100, recall: 88 },
-    { name: 'Random Forest', accuracy: 92.48, precision: 100, recall: 92 },  // MEJOR MODELO
-    { name: 'Logistic Reg', accuracy: 89.94, precision: 100, recall: 90 },
-    { name: 'Stacking', accuracy: 90.16, precision: 100, recall: 90 },
+    { name: 'Decision Tree',  rocAuc: 98.55, f1Grave: 47, f1Macro: 72 },
+    { name: 'Random Forest',  rocAuc: 99.04, f1Grave: 76, f1Macro: 88 },
+    { name: 'Logistic Reg',   rocAuc: 98.69, f1Grave: 35, f1Macro: 65 },
+    { name: 'Stacking',       rocAuc: 98.83, f1Grave: 82, f1Macro: 91 },
   ]
 
   const routeComparisonData = [
@@ -186,7 +186,7 @@ const Results = () => {
     { label: 'Total Muertos', value: '728', subtext: '2.19% de accidentes fatales' },
     { label: 'Total Heridos', value: '8,000', subtext: '19.92% con lesionados' },
     { label: 'Clusters DBSCAN', value: '299', subtext: 'Puntos negros identificados' },
-    { label: 'Accuracy ML', value: '92.48%', subtext: 'Random Forest (mejor modelo)' },
+    { label: 'F1-grave (Stacking)', value: '0.82', subtext: 'Modelo final en producción' },
     { label: 'Moran\'s I', value: '0.6837', subtext: 'Clustering espacial (p=0.001)' },
   ]
 
@@ -579,9 +579,9 @@ const Results = () => {
                     <YAxis />
                     <Tooltip />
                     <Legend />
-                    <Bar dataKey="accuracy" fill="#0ea5e9" name="Accuracy (%)" />
-                    <Bar dataKey="precision" fill="#10b981" name="Precision (%)" />
-                    <Bar dataKey="recall" fill="#f59e0b" name="Recall (%)" />
+                    <Bar dataKey="rocAuc" fill="#0ea5e9" name="ROC-AUC (×100)" />
+                    <Bar dataKey="f1Grave" fill="#ef4444" name="F1 grave (%)" />
+                    <Bar dataKey="f1Macro" fill="#10b981" name="F1 macro (%)" />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -613,11 +613,11 @@ const Results = () => {
                   <h3 className="text-xl font-bold mb-4">Top 5 Features</h3>
                   <div className="space-y-3">
                     {[
-                      { name: 'hora', importance: 14.2 },
-                      { name: 'franja_horaria', importance: 13.4 },
-                      { name: 'riesgo_cluster', importance: 11.2 },
-                      { name: 'dia_semana', importance: 9.8 },
-                      { name: 'mes', importance: 8.7 },
+                      { name: 'clase', importance: 85 },
+                      { name: 'sexo', importance: 11 },
+                      { name: 'automovil', importance: 7 },
+                      { name: 'tipaccid', importance: 7 },
+                      { name: 'cinturon', importance: 6 },
                     ].map((feature, idx) => (
                       <div key={idx} className="space-y-1">
                         <div className="flex justify-between text-sm">
@@ -640,27 +640,26 @@ const Results = () => {
               <div className="card bg-gradient-to-r from-green-50 to-emerald-50 border-2 border-green-200">
                 <div className="flex items-center justify-between">
                   <div>
-                    <h3 className="text-2xl font-bold text-green-900 mb-2">Mejor Modelo: Random Forest ⭐</h3>
+                    <h3 className="text-2xl font-bold text-green-900 mb-2">Mejor Modelo: Stacking Ensemble</h3>
                     <p className="text-gray-700 mb-4">
-                      Predice gravedad del accidente (No Grave vs Grave) usando 26,783 registros
+                      Predice gravedad del accidente (No Grave vs Grave). Dataset desbalanceado (~3% grave) — métrica relevante: F1 de la clase grave.
                     </p>
                     <div className="flex gap-6">
                       <div>
-                        <span className="text-sm text-gray-600">Accuracy:</span>
-                        <span className="text-3xl font-bold text-green-600 ml-2">92.48%</span>
+                        <span className="text-sm text-gray-600">ROC-AUC:</span>
+                        <span className="text-3xl font-bold text-green-600 ml-2">0.988</span>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Precision:</span>
-                        <span className="text-3xl font-bold text-green-600 ml-2">100%</span>
+                        <span className="text-sm text-gray-600">F1-grave:</span>
+                        <span className="text-3xl font-bold text-green-600 ml-2">0.82</span>
                       </div>
                       <div>
-                        <span className="text-sm text-gray-600">Recall:</span>
-                        <span className="text-3xl font-bold text-green-600 ml-2">92%</span>
+                        <span className="text-sm text-gray-600">F1-macro:</span>
+                        <span className="text-3xl font-bold text-green-600 ml-2">0.91</span>
                       </div>
                     </div>
                     <div className="mt-3 text-xs text-gray-600">
-                      <strong>Variable objetivo:</strong> target_gravedad (0=No Grave, 1=Grave) |
-                      <strong> Top feature:</strong> clase del conductor (61.58% importancia)
+                      <strong>Base:</strong> RF + ET + HGB + LR · <strong>Meta:</strong> HistGradientBoosting · <strong>Top feature:</strong> clase del accidente
                     </div>
                   </div>
                   <FaCheckCircle className="text-6xl text-green-500" />

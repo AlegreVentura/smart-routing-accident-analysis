@@ -17,7 +17,7 @@ const Conclusions = () => {
     },
     {
       title: 'ML de Alto Rendimiento',
-      description: 'Stacking Ensemble con 92.48% accuracy, feature selection de 60+ a 20 variables',
+      description: 'Stacking Ensemble: ROC-AUC = 0.988, F1-grave = 0.82. Feature selection de 60+ a 16 variables.',
       icon: FaCheckCircle,
       color: 'text-purple-500'
     },
@@ -31,8 +31,8 @@ const Conclusions = () => {
 
   const limitations = [
     'Datos históricos (2019-2023) requieren actualización periódica',
-    'No captura factores como clima, tráfico en tiempo real, eventos especiales',
-    'Desbalance de clases: 85% accidentes leves vs 15% graves',
+    'Desbalance de clases: ~97% leves vs ~3% graves — tratado con SMOTE y pesos de clase',
+    'No captura eventos especiales (conciertos, marchas, clima extremo)',
     'Correlación ≠ Causación: modelos identifican patrones, no causas directas',
   ]
 
@@ -165,38 +165,6 @@ const Conclusions = () => {
             </ul>
           </div>
         </motion.div>
-
-        {/* Future Work */}
-        <div className="mb-16">
-          <h3 className="text-3xl font-bold mb-8 text-center">Roadmap de Desarrollo</h3>
-          <div className="space-y-6">
-            {futureWork.map((phase, index) => (
-              <motion.div
-                key={index}
-                initial={{ opacity: 0, x: index % 2 === 0 ? -30 : 30 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: index * 0.1 }}
-                className="card"
-              >
-                <div className="flex items-center space-x-4 mb-6">
-                  <div className={`w-16 h-16 bg-gradient-to-br ${phase.color} rounded-xl flex items-center justify-center`}>
-                    <phase.icon className="text-3xl text-white" />
-                  </div>
-                  <h4 className="text-2xl font-bold">{phase.category}</h4>
-                </div>
-                <ul className="grid md:grid-cols-2 gap-3">
-                  {phase.items.map((item, idx) => (
-                    <li key={idx} className="flex items-start text-gray-700">
-                      <span className="text-primary-600 mr-2">→</span>
-                      <span>{item}</span>
-                    </li>
-                  ))}
-                </ul>
-              </motion.div>
-            ))}
-          </div>
-        </div>
 
         {/* Impact */}
         <motion.div

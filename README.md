@@ -23,7 +23,7 @@ Proyecto Final Minería/
 - **299 clusters** de alta densidad (DBSCAN)
 - **13 hot spots** al 99% de confianza (Getis-Ord Gi*)
 - **Moran's I = 0.6837** — clustering espacial significativo
-- **F1 = 0.84** en predicción de gravedad (Stacking Ensemble con SMOTE, clase minoritaria)
+- **F1 = 0.84** en predicción de gravedad (Stacking Ensemble con SMOTE, poniendo atención a los falsos negativos)
 - Ruteo seguro con Dijkstra ponderado por riesgo compuesto
   
 ## Autores

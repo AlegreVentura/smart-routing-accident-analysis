@@ -64,7 +64,7 @@ const Methodology = () => {
       details: [
         'DBSCAN: 299 clusters',
         'Getis-Ord Gi*: Hot spots',
-        'Random Forest: 92.48% accuracy',
+        'Stacking Ensemble: F1-grave = 0.82',
         'Índice de riesgo compuesto'
       ],
       color: 'from-orange-500 to-orange-600'
@@ -96,8 +96,8 @@ const Methodology = () => {
     {
       category: 'Machine Learning',
       methods: [
-        { name: 'Random Forest', formula: 'Accuracy: 92.48%', latex: false },
-        { name: 'Stacking Ensemble', formula: 'Accuracy: 92.48%', latex: false },
+        { name: 'Random Forest', formula: 'ROC\\text{-}AUC = 0.990,\\; F1_{grave} = 0.76', latex: true },
+        { name: 'Stacking Ensemble', formula: 'ROC\\text{-}AUC = 0.988,\\; F1_{grave} = 0.82', latex: true },
         { name: 'Feature Selection', formula: '60 \\rightarrow 20 \\; features', latex: true },
       ]
     },
@@ -238,7 +238,7 @@ const Methodology = () => {
                 <div className="text-center">
                   <div className="text-5xl font-bold text-green-300 mb-2">30%</div>
                   <div className="text-sm font-semibold text-gray-200">Predicción ML</div>
-                  <div className="text-xs text-gray-400 mt-1">Random Forest</div>
+                  <div className="text-xs text-gray-400 mt-1">Stacking Ensemble</div>
                 </div>
               </div>
             </div>

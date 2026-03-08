@@ -4,8 +4,8 @@ import { Link } from 'react-router-dom'
 
 const LandingPage = () => {
   return (
-    <div className="min-h-screen">
-      {/* Gradient Background - same as Hero */}
+    <div className="h-screen overflow-hidden flex flex-col">
+      {/* Gradient Background */}
       <div className="absolute inset-0 bg-gradient-to-br from-primary-900 via-primary-800 to-accent-900"></div>
 
       {/* Animated Shapes */}
@@ -15,145 +15,107 @@ const LandingPage = () => {
       </div>
 
       {/* Content */}
-      <div className="relative z-10 container-custom py-20 md:py-32">
-        <div className="text-center mb-16">
+      <div className="relative z-10 flex flex-col h-full px-8 py-6 gap-6 justify-center">
+
+        {/* Header */}
+        <div className="text-center">
           <motion.div
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8 }}
-            className="mb-6"
+            transition={{ duration: 0.5 }}
+            className="mb-2"
           >
-            <span className="inline-block px-4 py-2 bg-white/10 backdrop-blur-md text-white rounded-full text-sm font-medium mb-6">
+            <span className="inline-block px-4 py-1.5 bg-white/10 backdrop-blur-md text-white rounded-full text-base font-medium">
               Proyecto Final de Minería de Datos
             </span>
           </motion.div>
 
           <motion.h1
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-4xl md:text-6xl lg:text-7xl font-bold text-white mb-6"
+            transition={{ duration: 0.5, delay: 0.1 }}
+            className="text-5xl md:text-6xl font-bold text-white mb-2"
           >
-            Sistema de Análisis de Accidentes
-            <br />
+            Sistema de Análisis de Accidentes{' '}
             <span className="bg-gradient-to-r from-primary-300 to-accent-300 bg-clip-text text-transparent">
               CDMX
             </span>
           </motion.h1>
 
           <motion.p
-            initial={{ opacity: 0, y: 30 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.4 }}
-            className="text-xl md:text-2xl text-gray-200 mb-4 max-w-4xl mx-auto"
+            transition={{ duration: 0.5, delay: 0.2 }}
+            className="text-xl text-gray-300 mx-auto"
           >
-            ¿Para qué quieres usar la herramienta?
-          </motion.p>
-
-          <motion.p
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.5 }}
-            className="text-lg text-gray-300 mb-16 max-w-3xl mx-auto"
-          >
-            Análisis integral usando Machine Learning y optimización espacial
+            Análisis integral usando Machine Learning y optimización espacial — ¿qué módulo quieres explorar?
           </motion.p>
         </div>
 
         {/* Module Selection Cards */}
         <motion.div
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.7 }}
-          className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto"
+          transition={{ duration: 0.5, delay: 0.3 }}
+          className="grid md:grid-cols-2 gap-6"
         >
           {/* Ruteo Seguro Card */}
-          <Link to="/ruteo-seguro">
-            <div className="bg-gradient-to-br from-primary-900/80 to-primary-800/80 backdrop-blur-xl rounded-2xl p-8 border border-primary-400/30 hover:border-primary-400/50 hover:scale-105 transition-all duration-300 cursor-pointer h-full shadow-2xl">
-              <div className="flex items-center justify-center w-16 h-16 bg-primary-400/20 rounded-xl mb-6">
-                <FaRoute className="text-3xl text-primary-200" />
+          <Link to="/ruteo-seguro" className="block">
+            <div className="bg-gradient-to-br from-primary-900/80 to-primary-800/80 backdrop-blur-xl rounded-2xl p-8 border border-primary-400/30 hover:border-primary-400/60 hover:scale-[1.01] transition-all duration-300 shadow-2xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center justify-center w-14 h-14 bg-primary-400/20 rounded-xl shrink-0">
+                  <FaRoute className="text-3xl text-primary-200" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Ruteo Seguro CDMX</h3>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Ruteo Seguro CDMX</h3>
-              <p className="text-gray-100 mb-6">
+              <p className="text-gray-200 mb-5 text-base">
                 Encuentra las rutas más seguras evitando puntos negros de accidentes
               </p>
-              <ul className="space-y-3 mb-6 text-gray-100">
-                <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold"></span>
-                  <span>78K+ accidentes analizados (2019-2023)</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold"></span>
-                  <span>299 clusters identificados</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold"></span>
-                  <span>Heatmaps temporales interactivos</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-primary-200 mr-2 font-bold"></span>
-                  <span>Rutas alternativas optimizadas</span>
-                </li>
+              <ul className="space-y-3 mb-6 text-gray-200 text-base">
+                <li className="flex items-center gap-2"><span className="text-primary-300 font-bold">▸</span>78K+ accidentes analizados (2019-2023)</li>
+                <li className="flex items-center gap-2"><span className="text-primary-300 font-bold">▸</span>299 clusters identificados</li>
+                <li className="flex items-center gap-2"><span className="text-primary-300 font-bold">▸</span>Heatmaps temporales interactivos</li>
+                <li className="flex items-center gap-2"><span className="text-primary-300 font-bold">▸</span>Rutas alternativas optimizadas</li>
               </ul>
-              <div className="flex items-center text-primary-200 font-semibold">
-                Explorar módulo
-                <FaArrowRight className="ml-2" />
+              <div className="flex items-center text-primary-200 font-semibold text-base">
+                Explorar módulo <FaArrowRight className="ml-2" />
               </div>
             </div>
           </Link>
 
           {/* Hospitales Card */}
-          <Link to="/hospitales">
-            <div className="bg-gradient-to-br from-accent-900/80 to-accent-800/80 backdrop-blur-xl rounded-2xl p-8 border border-accent-400/30 hover:border-accent-400/50 hover:scale-105 transition-all duration-300 cursor-pointer h-full shadow-2xl">
-              <div className="flex items-center justify-center w-16 h-16 bg-accent-400/20 rounded-xl mb-6">
-                <FaHospital className="text-3xl text-accent-200" />
+          <Link to="/hospitales" className="block">
+            <div className="bg-gradient-to-br from-accent-900/80 to-accent-800/80 backdrop-blur-xl rounded-2xl p-8 border border-accent-400/30 hover:border-accent-400/60 hover:scale-[1.01] transition-all duration-300 shadow-2xl">
+              <div className="flex items-center gap-4 mb-4">
+                <div className="flex items-center justify-center w-14 h-14 bg-accent-400/20 rounded-xl shrink-0">
+                  <FaHospital className="text-3xl text-accent-200" />
+                </div>
+                <h3 className="text-2xl font-bold text-white">Localización de Hospitales</h3>
               </div>
-              <h3 className="text-2xl font-bold text-white mb-4">Localización de Hospitales</h3>
-              <p className="text-gray-100 mb-6">
+              <p className="text-gray-200 mb-5 text-base">
                 Optimiza la ubicación de nuevos hospitales mediante análisis espacial
               </p>
-              <ul className="space-y-3 mb-6 text-gray-100">
-                <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold"></span>
-                  <span>Clusters de accidentes desatendidos</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold"></span>
-                  <span>Análisis de cobertura nacional</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold"></span>
-                  <span>10 hospitales propuestos</span>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-accent-200 mr-2 font-bold"></span>
-                  <span>Mejora en tiempos de respuesta</span>
-                </li>
+              <ul className="space-y-3 mb-6 text-gray-200 text-base">
+                <li className="flex items-center gap-2"><span className="text-accent-300 font-bold">▸</span>Clusters de accidentes desatendidos</li>
+                <li className="flex items-center gap-2"><span className="text-accent-300 font-bold">▸</span>Análisis de cobertura nacional</li>
+                <li className="flex items-center gap-2"><span className="text-accent-300 font-bold">▸</span>10 hospitales propuestos</li>
+                <li className="flex items-center gap-2"><span className="text-accent-300 font-bold">▸</span>Mejora en tiempos de respuesta</li>
               </ul>
-              <div className="flex items-center text-accent-200 font-semibold">
-                Explorar módulo
-                <FaArrowRight className="ml-2" />
+              <div className="flex items-center text-accent-200 font-semibold text-base">
+                Explorar módulo <FaArrowRight className="ml-2" />
               </div>
             </div>
           </Link>
         </motion.div>
 
-        {/* Footer Credits */}
+        {/* Footer */}
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="mt-20 text-center text-gray-300 text-sm"
+          transition={{ duration: 0.8, delay: 0.5 }}
+          className="text-center text-gray-500 text-sm"
         >
-          <p className="mb-2">
-            <strong>Equipo:</strong> Roberto Jhoshua Alegre Ventura, Alejandro Iram Ramírez Nava
-          </p>
-          <p className="mb-2">
-            <strong>Profesora:</strong> Dra. Ileana Angélica Grave Aguilar
-          </p>
-          <p>
-            <strong>Institución:</strong> UNAM - IIMAS | <strong>Año:</strong> 2025
-          </p>
+          <p>Roberto Jhoshua Alegre Ventura · UNAM · IIMAS · 2025</p>
         </motion.div>
       </div>
     </div>

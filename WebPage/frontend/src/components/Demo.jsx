@@ -508,7 +508,7 @@ const Demo = () => {
             <div className="bg-white/10 backdrop-blur-md rounded-xl p-6 border border-white/20">
               <div className="text-4xl font-bold text-purple-400 mb-2">30%</div>
               <div className="text-sm text-gray-300">Riesgo ML</div>
-              <div className="text-xs text-gray-400 mt-1">Predicción de gravedad Random Forest</div>
+              <div className="text-xs text-gray-400 mt-1">Predicción de gravedad Stacking Ensemble</div>
             </div>
           </motion.div>
         </div>

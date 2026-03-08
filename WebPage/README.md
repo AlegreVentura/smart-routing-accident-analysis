@@ -1,10 +1,10 @@
-# 🌐 Sistema de Ruteo Seguro CDMX - Aplicación Web
+# Sistema de Ruteo Seguro CDMX - Aplicacin Web
 
 Aplicación web completa que presenta el proyecto de análisis de accidentes de tránsito en la Ciudad de México, integrando visualizaciones interactivas, resultados y un sistema de ruteo seguro.
 
 ---
 
-## 📋 Tabla de Contenido
+## Tabla de Contenido
 
 - [Características](#características)
 - [Tecnologías](#tecnologías)
@@ -16,7 +16,7 @@ Aplicación web completa que presenta el proyecto de análisis de accidentes de 
 
 ---
 
-## ✨ Características
+## Caractersticas
 
 ### Frontend (React + Vite)
 - **Diseño Moderno y Responsivo**: Interfaz elegante con Tailwind CSS
@@ -40,7 +40,7 @@ Aplicación web completa que presenta el proyecto de análisis de accidentes de 
 
 ---
 
-## 🛠 Tecnologías
+## Tecnologas
 
 ### Frontend
 - **React 18** - Biblioteca UI
@@ -61,7 +61,7 @@ Aplicación web completa que presenta el proyecto de análisis de accidentes de 
 
 ---
 
-## 📁 Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 WebPage/
@@ -103,7 +103,7 @@ WebPage/
 
 ---
 
-## 🚀 Instalación
+## Instalacin
 
 ### Prerrequisitos
 
@@ -145,13 +145,13 @@ PORT=5000
 NODE_ENV=development
 FRONTEND_URL=http://localhost:3000
 
-# HERE Routing API — tiempos de viaje con tráfico real
+# HERE Routing API  tiempos de viaje con trfico real
 # Obtener gratis en: https://platform.here.com  (250,000 req/mes gratis)
 HERE_API_KEY=tu_api_key_aqui
 
-# Google Maps Directions API — mostrar ruta de Google Maps en la demo (opcional)
-# Obtener en: https://console.cloud.google.com → APIs → Directions API
-# Requiere facturación activada (tiene capa gratuita de $200/mes)
+# Google Maps Directions API  mostrar ruta de Google Maps en la demo (opcional)
+# Obtener en: https://console.cloud.google.com  APIs  Directions API
+# Requiere facturacin activada (tiene capa gratuita de $200/mes)
 GOOGLE_MAPS_API_KEY=tu_api_key_aqui
 ```
 
@@ -159,11 +159,11 @@ GOOGLE_MAPS_API_KEY=tu_api_key_aqui
 
 ---
 
-## 💻 Uso
+## Uso
 
 ### Modo Desarrollo
 
-#### Opción 1: Ejecutar Frontend y Backend por Separado
+#### Opcin 1: Ejecutar Frontend y Backend por Separado
 
 **Terminal 1 - Backend:**
 ```bash
@@ -179,7 +179,7 @@ npm run dev
 # App running on http://localhost:3000
 ```
 
-#### Opción 2: Ejecutar Ambos Simultáneamente (Recomendado)
+#### Opcin 2: Ejecutar Ambos Simultneamente (Recomendado)
 
 Instala `concurrently` en la raíz de WebPage:
 
@@ -207,7 +207,7 @@ Luego ejecuta:
 npm run dev
 ```
 
-### Modo Producción
+### Modo Produccin
 
 #### 1. Build del Frontend
 
@@ -240,7 +240,7 @@ app.get('*', (req, res) => {
 })
 ```
 
-#### 3. Ejecutar en Producción
+#### 3. Ejecutar en Produccin
 
 ```bash
 cd backend
@@ -249,7 +249,7 @@ npm start
 
 ---
 
-## 🔌 API Endpoints
+## API Endpoints
 
 ### Project Information
 
@@ -391,7 +391,7 @@ Verifica que el servidor esté funcionando.
 
 ---
 
-## 🎨 Personalización
+## Personalizacin
 
 ### Colores y Tema
 
@@ -415,7 +415,7 @@ Los componentes están en `frontend/src/components/`. Cada componente es indepen
 
 ---
 
-## 📦 Despliegue
+## Despliegue
 
 ### Vercel (Frontend)
 
@@ -475,7 +475,7 @@ docker run -p 5000:5000 ruteo-seguro-cdmx
 
 ---
 
-## 🤝 Contribución
+## Contribucin
 
 Este proyecto es académico, pero las mejoras son bienvenidas:
 
@@ -487,19 +487,19 @@ Este proyecto es académico, pero las mejoras son bienvenidas:
 
 ---
 
-## 📝 Licencia
+## Licencia
 
 Proyecto académico - Minería de Datos
 
 ---
 
-## 👥 Autores
+## Autores
 
 Proyecto Final de Minería de Datos
 
 ---
 
-## 🙏 Agradecimientos
+## Agradecimientos
 
 - **C5 CDMX** - Datos abiertos de accidentes
 - **OpenStreetMap** - Red vial
@@ -507,4 +507,4 @@ Proyecto Final de Minería de Datos
 
 ---
 
-**⭐ DEMO LIVE:** Abre `http://localhost:3000` después de ejecutar `npm run dev`
+**DEMO LIVE:** Abre `http://localhost:3000` después de ejecutar `npm run dev`

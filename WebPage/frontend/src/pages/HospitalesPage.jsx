@@ -90,8 +90,8 @@ const HospitalesPage = () => {
               </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <motion.div
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 items-stretch">
+              <motion.div className="h-full"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -105,7 +105,7 @@ const HospitalesPage = () => {
                 />
               </motion.div>
 
-              <motion.div
+              <motion.div className="h-full"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -119,7 +119,7 @@ const HospitalesPage = () => {
                 />
               </motion.div>
 
-              <motion.div
+              <motion.div className="h-full"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -134,7 +134,7 @@ const HospitalesPage = () => {
                 />
               </motion.div>
 
-              <motion.div
+              <motion.div className="h-full"
                 initial={{ opacity: 0, y: 30 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
@@ -216,7 +216,7 @@ const HospitalesPage = () => {
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div className="grid md:grid-cols-2 gap-8">
               {visualizaciones.map((viz, index) => (
                 <motion.div
                   key={viz.id}

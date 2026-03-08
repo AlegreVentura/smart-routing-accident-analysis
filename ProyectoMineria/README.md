@@ -60,7 +60,6 @@ ProyectoMineria/
 │   └── mapa_rutas_zocalo_polanco.html     # 3 rutas comparativas
 │
 ├── Documentos/
-│   ├── plan de trabajo.pdf
 │   ├── Reporte_minería.pdf
 │   └── Presentación Exposición.pdf
 │

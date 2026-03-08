@@ -15,7 +15,7 @@ Proyecto Final Minería/
 - [ProyectoMineria/README.md](ProyectoMineria/README.md) — Descripción técnica completa, flujo de datos y cómo reproducir el análisis
 - [WebPage/README.md](WebPage/README.md) — Instalación y uso de la aplicación web
 - [ProyectoMineria/docs/README_NOTEBOOKS.md](ProyectoMineria/docs/README_NOTEBOOKS.md) — Detalle de cada notebook
-- [ProyectoMineria/docs/README_DATOS.md](ProyectoMineria/docs/README_DATOS.md) — Explicación de los archivos de datos
+- [ProyectoMineria/docs/README_FORMULAS.md](ProyectoMineria/docs/README_FORMULAS.md) — Fórmulas, pesos y decisiones técnicas
 
 ## Resultados
 

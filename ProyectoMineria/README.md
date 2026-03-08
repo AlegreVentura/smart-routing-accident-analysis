@@ -12,7 +12,7 @@ Sistema completo de análisis de accidentes de tránsito en la Ciudad de México
 
 1. **Procesamiento de Datos:** Limpieza y consolidación de 78,366 accidentes en CDMX (2019-2023)
 2. **Análisis Espacial:** Clustering DBSCAN, Hot Spots (Getis-Ord Gi\*), Autocorrelación (Moran's I)
-3. **Machine Learning:** Predicción de gravedad con Random Forest, Decision Tree, Stacking Ensemble
+3. **Machine Learning:** Predicción de gravedad con Random Forest, Decision Tree, Stacking Ensemble y más
 4. **Sistema de Ruteo:** Cálculo de rutas seguras usando 3 capas de riesgo (histórico + clustering + ML)
 5. **Aplicación Web:** Demo interactivo con ruteo personalizable por vehículo y hora del día
 
@@ -25,7 +25,7 @@ ProyectoMineria/
 │
 ├── NOTEBOOKS (ejecutar en orden)
 │   ├── 01_preparacion_datos.ipynb         # Limpieza, filtrado CDMX, matching red vial
-│   ├── 02_analisis_y_modelado.ipynb       # DBSCAN, Hot Spots, Random Forest
+│   ├── 02_analisis_y_modelado.ipynb       # DBSCAN, Hot Spots, Aprendizaje de máquina
 │   └── 03_sistema_ruteo.ipynb             # Grafo de riesgo + rutas Dijkstra
 │
 ├── Datos raw/                             # CSV originales INEGI (ya en GitHub)
@@ -51,7 +51,7 @@ ProyectoMineria/
 │   └── red_vial_con_riesgo.pkl            # Grafo con riesgo (generado por notebook 03, NO en git)
 │
 ├── modelos/                               # Generados por notebook 02
-│   ├── modelo_riesgo_rf.pkl               # Random Forest entrenado
+│   ├── modelo_riesgo_stack.pkl            # Stacking Ensemble entrenado (modelo final)
 │   ├── scaler.pkl                         # StandardScaler
 │   └── feature_names.pkl                  # Nombres de features del modelo
 │
@@ -142,7 +142,7 @@ Datos raw/ (INEGI, 2019-2023)
          ├─► GRID_HOTSPOTS.csv               (Getis-Ord Gi*)
          ├─► EDGE_RISK_SCORES.csv
          ├─► SCORING_RIESGO_COMPUESTO.csv    (riesgo ML)
-         └─► modelos/ (RF, scaler, features)
+         └─► modelos/ (Stacking, scaler, features)
          │
          ▼
   [03_sistema_ruteo.ipynb]
@@ -176,7 +176,7 @@ Dataset desbalanceado (~97% no grave, ~3% grave) — se usó SMOTE. La métrica 
 | Random Forest | 0.9904 | 0.76 | 0.88 |
 | **Stacking Ensemble** | **0.9849** | **0.84** | **0.92** |
 
-El Stacking usa RF tuneado + Logistic Regression + GradientBoosting como base estimators, con RF como meta-learner y `passthrough=True`. El RF sigue siendo el modelo guardado para predicción en el backend.
+El Stacking usa RF tuneado + ExtraTrees + HistGradientBoosting + Logistic Regression como base estimators, con HistGradientBoosting como meta-learner y `passthrough=True`. El modelo guardado en producción es `modelo_riesgo_stack.pkl`.
 
 ### Fórmula de Riesgo Compuesto
 
@@ -211,11 +211,3 @@ Los datos crudos (`Datos raw/`) provienen del **INEGI** — Registro Administrat
 - [`docs/README_NOTEBOOKS.md`](docs/README_NOTEBOOKS.md) — Detalles técnicos de cada notebook
 - [`docs/README_FORMULAS.ipynb`](docs/README_FORMULAS.ipynb) — Fórmulas matemáticas con LaTeX
 - [`Documentos/Reporte_minería.pdf`](Documentos/Reporte_minería.pdf) — Reporte final del proyecto
-
----
-
-## Autores
-
-Proyecto desarrollado como Trabajo Final de **Minería de Datos**.
-
-Los datos utilizados provienen de fuentes públicas (INEGI, OpenStreetMap).

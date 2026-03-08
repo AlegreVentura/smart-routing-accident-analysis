@@ -17,7 +17,7 @@
     ├─► Datos combinados CDMX/GRID_HOTSPOTS.csv
     ├─► Datos combinados CDMX/EDGE_RISK_SCORES.csv
     ├─► Datos combinados CDMX/SCORING_RIESGO_COMPUESTO.csv
-    └─► modelos/ (modelo_riesgo_rf.pkl, scaler.pkl, feature_names.pkl)
+    └─► modelos/ (modelo_riesgo_stack.pkl, scaler.pkl, feature_names.pkl)
     │
     ▼
 03_sistema_ruteo.ipynb
@@ -87,14 +87,14 @@ Dataset desbalanceado (~97% no grave, ~3% grave) — se usó SMOTE. Métrica rel
 | Random Forest | 0.9904 | 0.76 | 0.88 |
 | **Stacking Ensemble** | **0.9849** | **0.84** | **0.92** |
 
-Base estimators: RF tuneado + Logistic Regression + GradientBoosting. Meta-learner: Random Forest con `passthrough=True`.
+Base estimators: RF tuneado + ExtraTrees + HistGradientBoosting + Logistic Regression. Meta-learner: HistGradientBoosting con `passthrough=True`.
 
 **Salidas:**
 - `Datos combinados CDMX/ACCIDENTES_CON_CLUSTERING.csv` — cluster DBSCAN + riesgo_cluster
 - `Datos combinados CDMX/GRID_HOTSPOTS.csv` — 755 celdas con gi_score y clasificación
 - `Datos combinados CDMX/EDGE_RISK_SCORES.csv` — riesgo asignado por arista del grafo
 - `Datos combinados CDMX/SCORING_RIESGO_COMPUESTO.csv` — riesgo ML + compuesto por punto
-- `modelos/modelo_riesgo_rf.pkl` — Random Forest entrenado
+- `modelos/modelo_riesgo_stack.pkl` — Stacking Ensemble entrenado (modelo final)
 - `modelos/scaler.pkl` — StandardScaler
 - `modelos/feature_names.pkl` — lista de features del modelo
 - `mapas/mapa_clusters_dbscan.html` — visualización interactiva

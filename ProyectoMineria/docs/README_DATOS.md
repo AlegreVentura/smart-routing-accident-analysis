@@ -1,150 +1,164 @@
-# Documentación de Datos
+# Fórmulas y Diseño Técnico
 
-Estructura de carpetas de datos del proyecto de Ruteo Seguro para CDMX.
-
----
-
-## Estructura general
-
-```
-ProyectoMineria/
-├── Datos raw/              ← Fuente original (en git)
-├── Datos limpios/          ← Generado por notebook 01 (no en git)
-├── Datos combinados CDMX/  ← Generados por notebooks 01 y 02 (en git)
-└── Documentos/             ← PDFs del proyecto (en git)
-```
-
-> `Datos combinados/` (datos nacionales intermedios) no está en git — se genera automáticamente al correr el notebook 01.
+Decisiones metodológicas clave del Sistema de Ruteo Seguro para CDMX.
 
 ---
 
-## 1. Datos raw/
+## 1. Índice de Riesgo Compuesto
 
-Archivos CSV descargados del INEGI — Registro Administrativo de Accidentes de Tránsito Terrestre (RAAT), base georreferenciada municipal.
+La métrica central del sistema combina tres fuentes de información:
 
 ```
-Datos raw/
-├── 2019/  BASE MUNICIPAL_ACCIDENTES DE TRANSITO GEORREFERENCIADOS_2019.csv
-├── 2020/  BASE MUNICIPAL_ACCIDENTES DE TRANSITO GEORREFERENCIADOS_2020.csv
-├── 2021/  BASE MUNICIPAL_ACCIDENTES DE TRANSITO GEORREFERENCIADOS_2021.csv
-├── 2022/  BASE MUNICIPAL_ACCIDENTES DE TRANSITO GEORREFERENCIADOS_2022.csv
-├── 2023/  BASE MUNICIPAL_ACCIDENTES DE TRANSITO GEORREFERENCIADOS_2023.csv
-└── documentacion/  Metadatos y diccionario de variables
+riesgo_compuesto = 0.6 × riesgo_histórico
+                 + 0.1 × riesgo_cluster
+                 + 0.3 × riesgo_ml
 ```
 
-**Contenido:** Accidentes de toda la república (no solo CDMX), ~29-45 MB por año.
-**Problemas conocidos:** Nulos, coordenadas (0,0), duplicados — corregidos por notebook 01.
-**Fuente:** https://www.inegi.org.mx/programas/accidentes/
+| Componente | Peso | Fuente | Justificación |
+|------------|------|--------|---------------|
+| Riesgo histórico | 60% | Accidentes reales por tramo (2019-2023) | Dato más confiable y directo |
+| Riesgo ML | 30% | P(grave \| hora, vehículo, ubicación) × 100 | Agrega contexto situacional |
+| Riesgo clustering | 10% | Tamaño del cluster DBSCAN normalizado | Complementa densidad local |
+
+**Rango:** [0, 100] — 0 = mínimo riesgo, 100 = máximo riesgo en CDMX.
 
 ---
 
-## 2. Datos limpios/
+## 2. Pesos de Aristas para Ruteo (Dijkstra)
 
-Generado por `01_preparacion_datos.ipynb`. Un CSV por año con limpieza básica aplicada.
+Se calculan tres funciones de costo para ofrecer rutas con distintos compromisos:
 
+### Ruta Más Corta
 ```
-Datos limpios/
-├── 2019/  ACCIDENTES_LIMPIO_2019.csv
-├── 2020/  ACCIDENTES_LIMPIO_2020.csv
-├── 2021/  ACCIDENTES_LIMPIO_2021.csv
-├── 2022/  ACCIDENTES_LIMPIO_2022.csv
-└── 2023/  ACCIDENTES_LIMPIO_2023.csv
+peso_distancia = longitud  [metros]
 ```
 
-**Limpieza aplicada:** Eliminación de nulos, coordenadas inválidas, duplicados exactos.
-**Nota:** No está en git (es intermedio regenerable). Se genera al correr notebook 01.
+### Ruta Balanceada
+```
+peso_balanceado = longitud × (1 + riesgo / 100)
+```
+
+Una calle de 1 km con riesgo=100 "pesa" el doble que una con riesgo=0.
+
+### Ruta Más Segura
+```
+peso_seguro = longitud × (1 + 2 × riesgo / 100)
+```
+
+El factor 2 amplifica la penalización: una calle con riesgo=100 "pesa" el triple.
+
+**Resultado empírico (Zócalo → Polanco):**
+
+| Ruta | Distancia | Riesgo promedio | Reducción riesgo |
+|------|-----------|-----------------|------------------|
+| Más corta | 8.5 km | 45/100 | — |
+| Balanceada | 9.2 km (+8%) | 32/100 | −29% |
+| Más segura | 10.1 km (+19%) | 25/100 | −44% |
 
 ---
 
-## 3. Datos combinados CDMX/
+## 3. Índice de Riesgo por Clustering
 
-Archivos principales del proyecto — filtrados exclusivamente para Ciudad de México, con feature engineering y análisis espacial/ML completos.
+Para cada punto del dataset, el riesgo derivado de DBSCAN se calcula así:
 
-### Generados por `01_preparacion_datos.ipynb`
+```
+Si cluster_dbscan == -1 (ruido):
+    riesgo_cluster = 0
 
-**`ACCIDENTES_COMBINADO_CDMX_2019_2023.csv`**
-- ~78,366 registros, solo CDMX (edo == 9)
-- Features añadidas: `franja_horaria`, `es_fin_de_semana`, `es_hora_pico`, `gravedad`
+Si cluster_dbscan ≥ 0:
+    riesgo_cluster = 50 + 50 × (tamaño_cluster − min_tamaño)
+                              ────────────────────────────────
+                              (max_tamaño − min_tamaño)
+```
 
-**`ACCIDENTES_CON_TRAMOS_2019_2023.csv`**
-- ~32,139 accidentes con matching a la red vial OSM
-- Columnas nuevas: `edge_u`, `edge_v`, `edge_key`, `distancia_edge`
-
-### Generados por `02_analisis_y_modelado.ipynb`
-
-**`ACCIDENTES_CON_CLUSTERING.csv`**
-- ~32,139 puntos con resultado DBSCAN
-- Columnas: `cluster_dbscan` (ID, -1 = ruido), `riesgo_cluster` (0-100)
-- 299 clusters identificados, 17,178 puntos agrupados (53.4%)
-
-**`GRID_HOTSPOTS.csv`**
-- 755 celdas de 0.01° (~1.1 km) con análisis Getis-Ord Gi*
-- Columnas: `centroid_lat`, `centroid_lon`, `n_accidentes`, `gi_score`, `hot_spot`, `riesgo_hotspot`
-- Distribución: 725 no significativas / 17 hot spots 95% / 13 hot spots 99%
-
-**`EDGE_RISK_SCORES.csv`**
-- Riesgo compuesto asignado por arista del grafo vial
-- Columnas: `u`, `v`, `key`, `riesgo_compuesto`
-- Usado por el backend para precalcular pesos del grafo
-
-**`SCORING_RIESGO_COMPUESTO.csv`**
-- ~72,131 puntos con índice de riesgo final
-- Columnas: `latitud`, `longitud`, `riesgo_cluster`, `riesgo_ml`, `indice_riesgo_compuesto`
-- Fórmula: `riesgo_compuesto = 0.6 × riesgo_histórico + 0.1 × riesgo_cluster + 0.3 × riesgo_ml`
+- Cluster mínimo → riesgo = 50
+- Cluster más grande de CDMX → riesgo = 100
+- Puntos aislados (ruido) → riesgo = 0
 
 ---
 
-## 4. Documentos/
+## 4. Predicción de Gravedad (Modelo ML)
 
-PDFs del proyecto (no son datos de análisis).
+El riesgo ML es la probabilidad que el Stacking Ensemble asigna a que un accidente sea grave, escalada a [0, 100]:
 
 ```
-Documentos/
-├── plan de trabajo.pdf          ← Planificación inicial
-├── Reporte_minería.pdf          ← Reporte final
-└── Presentación Exposición.pdf  ← Presentación (81 MB)
+riesgo_ml = P(grave | hora, latitud, longitud, tipo_vehículo, ...) × 100
 ```
+
+**Arquitectura del Stacking:**
+- Base: RF tuneado + ExtraTrees + HistGradientBoosting + Logistic Regression
+- Meta-learner: HistGradientBoosting con `passthrough=True`, `cv=5`
+- Clase desbalanceada (~97% leve / ~3% grave) → SMOTE + `class_weight='balanced'`
+- Threshold óptimo buscado via curva precision-recall (en lugar del 0.5 por defecto)
+
+**Métricas finales:**
+
+| Modelo | ROC-AUC | F1 (grave) | F1 macro |
+|--------|---------|------------|----------|
+| Decision Tree | 0.9855 | 0.47 | 0.72 |
+| Logistic Regression | 0.9869 | 0.35 | 0.65 |
+| Random Forest | 0.9904 | 0.76 | 0.88 |
+| **Stacking Ensemble** | **0.9849** | **0.84** | **0.92** |
 
 ---
 
-## Flujo de datos
+## 5. Fórmulas de Análisis Espacial
+
+### DBSCAN
+Parámetros: `eps = 300 m`, `min_samples = 20` (distancia en UTM Zone 14N).
+Resultado: 299 clusters, 46.6% de puntos clasificados como ruido.
+
+### Getis-Ord Gi* (Hot Spots)
 
 ```
-Datos raw/ (INEGI, 5 años)
-      │
-      ▼ notebook 01
-Datos limpios/ + Datos combinados CDMX/
-      │ (ACCIDENTES_COMBINADO_CDMX, ACCIDENTES_CON_TRAMOS, red_vial_cdmx.graphml)
-      │
-      ▼ notebook 02
-ACCIDENTES_CON_CLUSTERING.csv
-GRID_HOTSPOTS.csv
-EDGE_RISK_SCORES.csv
-SCORING_RIESGO_COMPUESTO.csv
-modelos/
-      │
-      ▼ notebook 03
-Red vial/red_vial_con_riesgo.pkl
-mapas/
+        Σⱼ wᵢⱼ xⱼ − X̄ · Σⱼ wᵢⱼ
+Gᵢ* = ────────────────────────────────────────────
+       S · √[ (n·Σwᵢⱼ² − (Σwᵢⱼ)²) / (n−1) ]
 ```
+
+- `xⱼ` = accidentes en celda j
+- `wᵢⱼ` = 1 si dist(i,j) ≤ 0.02° (~2.2 km), 0 si no
+- Gi* > 2.58 → Hot Spot con 99% confianza
+
+Resultado: 13 hot spots al 99%, 17 al 95%.
+
+### Moran's I (Autocorrelación Espacial)
+
+```
+        n          Σᵢ Σⱼ wᵢⱼ (xᵢ − x̄)(xⱼ − x̄)
+I = ─────────── × ─────────────────────────────────
+     Σᵢ Σⱼ wᵢⱼ         Σᵢ (xᵢ − x̄)²
+```
+
+**Resultado:** I = 0.6837 (p < 0.001) — clustering espacial altamente significativo.
 
 ---
 
-## Archivos clave para el backend
+## 6. Normalización de Riesgo Histórico por Tramo
 
-El backend (`WebPage/backend/`) lee directamente estos archivos al arrancar:
+Para asignar riesgo a cada arista del grafo vial:
 
-| Archivo | Usado para |
-|---------|-----------|
-| `ACCIDENTES_CON_CLUSTERING.csv` | KDTree para features de cluster (ml_service.py) |
-| `GRID_HOTSPOTS.csv` | Endpoint `/api/data/hotspots` |
-| `ACCIDENTES_COMBINADO_CDMX_2019_2023.csv` | Estadísticas generales |
-| `Red vial/red_vial_con_riesgo.pkl` | Grafo para Dijkstra (ml_service.py) |
+```
+riesgo_histórico(tramo) = (accidentes_tramo / max_accidentes_CDMX) × 100
+```
+
+Si el tramo no tiene accidentes registrados se asigna riesgo = 25 (bajo-medio por defecto).
 
 ---
 
-## Notas
+## 7. Score de Seguridad de Ruta
 
-- No modifiques los archivos en `Datos raw/` — son la fuente original
-- Los archivos en `Datos combinados CDMX/` son regenerables ejecutando los notebooks en orden
-- Si falta algún archivo, revisa [README_NOTEBOOKS.md](README_NOTEBOOKS.md) para saber qué notebook lo genera
+Para comparar rutas de forma intuitiva:
+
+```
+score_seguridad = 100 − riesgo_promedio_ruta
+
+reducción_riesgo (%) = (riesgo_ruta_corta − riesgo_ruta_segura)
+                       ──────────────────────────────────────── × 100
+                                riesgo_ruta_corta
+```
+
+Criterio de recomendación:
+- Riesgo se reduce >20% y distancia aumenta <25% → recomendar ruta segura
+- Riesgo se reduce 10-20% → recomendar ruta balanceada
+- Riesgo se reduce <10% → no hay ventaja significativa en seguridad

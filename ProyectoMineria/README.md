@@ -64,10 +64,9 @@ ProyectoMineria/
 │   ├── Reporte_minería.pdf
 │   └── Presentación Exposición.pdf
 │
-└── docs/
-    ├── README_DATOS.md                    # Explicación de carpetas de datos
+└── tecnico/
+    ├── README_FORMULAS.md                 # Fórmulas, pesos y decisiones técnicas
     ├── README_NOTEBOOKS.md                # Flujo de ejecución detallado
-    ├── README_FORMULAS.ipynb              # Fórmulas matemáticas con LaTeX
     └── ARQUITECTURA_WEB.md                # Arquitectura de la aplicación web
 ```
 
@@ -207,6 +206,6 @@ Los datos crudos (`Datos raw/`) provienen del **INEGI** — Registro Administrat
 
 ## Documentación Adicional
 
-- [`docs/README_FORMULAS.md`](docs/README_FORMULAS.md) — Fórmulas, pesos y decisiones técnicas
-- [`docs/README_NOTEBOOKS.md`](docs/README_NOTEBOOKS.md) — Detalles técnicos de cada notebook
+- [`tecnico/README_FORMULAS.md`](tecnico/README_FORMULAS.md) — Fórmulas, pesos y decisiones técnicas
+- [`tecnico/README_NOTEBOOKS.md`](tecnico/README_NOTEBOOKS.md) — Detalles técnicos de cada notebook
 - [`Documentos/Reporte_minería.pdf`](Documentos/Reporte_minería.pdf) — Reporte final del proyecto

@@ -80,12 +80,14 @@
 
 Dataset desbalanceado (~97% no grave, ~3% grave) — se usó SMOTE. Métrica relevante: ROC-AUC y F1 clase grave.
 
-| Modelo | ROC-AUC | F1 (grave) |
-|--------|---------|------------|
-| Decision Tree | 0.9855 | 0.47 |
-| Logistic Regression | 0.9869 | 0.35 |
-| Stacking Ensemble | 0.9829 | 0.78 |
-| **Random Forest** | **0.9904** | **0.85** (umbral optimizado 0.717) |
+| Modelo | ROC-AUC | F1 (grave) | F1 macro |
+|--------|---------|------------|---------|
+| Decision Tree | 0.9855 | 0.47 | 0.72 |
+| Logistic Regression | 0.9869 | 0.35 | 0.65 |
+| Random Forest | 0.9904 | 0.76 | 0.88 |
+| **Stacking Ensemble** | **0.9849** | **0.84** | **0.92** |
+
+Base estimators: RF tuneado + Logistic Regression + GradientBoosting. Meta-learner: Random Forest con `passthrough=True`.
 
 **Salidas:**
 - `Datos combinados CDMX/ACCIDENTES_CON_CLUSTERING.csv` — cluster DBSCAN + riesgo_cluster

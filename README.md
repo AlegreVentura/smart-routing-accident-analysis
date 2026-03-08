@@ -29,6 +29,5 @@ Proyecto Final Minería/
 ## Autores
 
 - Alegre Ventura Roberto Jhoshua
-- Ramírez Nava Alejandro Iram
 
 Proyecto — Minería de Datos

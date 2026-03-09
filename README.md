@@ -2,6 +2,10 @@
 
 Proyecto de minería de datos para análisis integral de accidentes de tránsito en la Ciudad de México (2019-2023). Integra clustering espacial, machine learning y optimización de rutas Dijkstra en una aplicación web interactiva.
 
+## Demo
+
+<video src="assets/demo.mp4" controls width="100%"></video>
+
 ## Estructura
 
 ```

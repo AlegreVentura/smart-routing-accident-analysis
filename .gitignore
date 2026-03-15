@@ -1,0 +1,15 @@
+# Node modules
+node_modules/
+WebPage/backend/node_modules/
+
+# Environment variables
+.env
+*.env
+!.env.example
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+ProyectoMineria/Datos combinados/
